@@ -32,32 +32,35 @@
         <tr>
           <th class="px-4 py-3 w-16 text-center">#</th>
           <th class="px-4 py-3">Nombre</th>
+          <th *ngIf="tipoSeleccionado === 'carreras'" class="px-4 py-3">Duración</th>
+          <th *ngIf="tipoSeleccionado === 'bachilleratos'" class="px-4 py-3">Tipo</th>
           <th class="px-4 py-3 text-center">Acciones</th>
         </tr>
       </thead>
 
       <tbody>
-        <tr *ngFor="let item of catalogoActual; let i = index"
-            class="border-b hover:bg-gray-50 transition-all duration-200">
+        <tr *ngFor="let item of catalogoActual; let i = index" class="border-b hover:bg-gray-50 transition-all duration-200">
           <td class="px-4 py-2 text-center font-medium text-gray-700">{{ i + 1 }}</td>
           <td class="px-4 py-2 text-gray-800">{{ item.nombre }}</td>
+          <td *ngIf="tipoSeleccionado === 'carreras'" class="px-4 py-2 text-gray-700">{{ item.duracion_semestres }}</td>
+          <td *ngIf="tipoSeleccionado === 'bachilleratos'" class="px-4 py-2 text-gray-700">{{ item.tipo }}</td>
+
           <td class="px-4 py-2 text-center">
             <div class="flex justify-center gap-3">
-              <button title="Editar"
-                      (click)="abrirModalEditar(item)"
-                      class="p-2 rounded-full bg-yellow-50 hover:bg-yellow-100 transition">
+              <button title="Editar" (click)="abrirModalEditar(item)"
+                class="p-2 rounded-full bg-yellow-50 hover:bg-yellow-100 transition">
                 <i data-lucide="edit-2" class="w-4 h-4 text-yellow-700"></i>
               </button>
-              <button title="Eliminar"
-                      (click)="eliminar(item)"
-                      class="p-2 rounded-full bg-red-50 hover:bg-red-100 transition">
+              <button title="Eliminar" (click)="eliminar(item)"
+                class="p-2 rounded-full bg-red-50 hover:bg-red-100 transition">
                 <i data-lucide="trash-2" class="w-4 h-4 text-red-700"></i>
               </button>
             </div>
           </td>
         </tr>
+
         <tr *ngIf="catalogoActual.length === 0">
-          <td colspan="3" class="text-center text-gray-500 py-4">No hay registros.</td>
+          <td colspan="4" class="text-center text-gray-500 py-4">No hay registros.</td>
         </tr>
       </tbody>
     </table>
@@ -70,21 +73,36 @@
         {{ modoEdicion ? 'Editar' : 'Agregar nuevo' }} {{ tipoSeleccionado | titlecase }}
       </h3>
 
+      <!-- Campo nombre -->
       <input
         type="text"
         [(ngModel)]="nombreNuevo"
         placeholder="Nombre"
         class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:ring-2 focus:ring-blue-500 outline-none" />
 
+      <!-- Campo duración (solo carreras) -->
+      <input
+        *ngIf="tipoSeleccionado === 'carreras'"
+        type="number"
+        [(ngModel)]="duracion"
+        placeholder="Duración (semestres)"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:ring-2 focus:ring-blue-500 outline-none" />
+
+      <!-- Campo tipo (solo bachilleratos) -->
+      <select
+        *ngIf="tipoSeleccionado === 'bachilleratos'"
+        [(ngModel)]="tipoBach"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:ring-2 focus:ring-blue-500 outline-none">
+        <option value="" disabled selected>Selecciona tipo</option>
+        <option value="Técnico">Técnico</option>
+        <option value="General">General</option>
+      </select>
+
       <div class="flex justify-end gap-3">
-        <button
-          (click)="cerrarModal()"
-          class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg font-medium">
+        <button (click)="cerrarModal()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg font-medium">
           Cancelar
         </button>
-        <button
-          (click)="guardar()"
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
+        <button (click)="guardar()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
           Guardar
         </button>
       </div>

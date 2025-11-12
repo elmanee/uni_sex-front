@@ -17,7 +17,7 @@ export class CatalogosService {
   }
 
   actualizarCatalogo(tipo: string, id: number, data: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${tipo}/${id}`, data);
+    return this.http.patch(`${this.baseUrl}/${tipo}/${id}`, data);
   }
 
   eliminarCatalogo(tipo: string, id: number): Observable<any> {
