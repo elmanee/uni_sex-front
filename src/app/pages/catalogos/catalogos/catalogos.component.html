@@ -1,0 +1,93 @@
+<div class="bg-white rounded-2xl shadow-xl p-6">
+  <!-- HEADER -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-blue-900 flex items-center gap-2">
+      <i data-lucide="book-open" class="w-6 h-6 text-blue-700"></i>
+      Administración de Catálogos
+    </h2>
+
+    <div class="flex items-center gap-3">
+      <select
+        [(ngModel)]="tipoSeleccionado"
+        (change)="cargarCatalogo()"
+        class="border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none">
+        <option value="carreras">Carreras</option>
+        <option value="especialidades">Especialidades</option>
+        <option value="bachilleratos">Bachilleratos</option>
+      </select>
+
+      <button
+        (click)="abrirModalNuevo()"
+        class="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium shadow transition-all">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        Nuevo
+      </button>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full border border-gray-300 rounded-xl text-sm text-left">
+      <thead class="bg-blue-900 text-white">
+        <tr>
+          <th class="px-4 py-3 w-16 text-center">#</th>
+          <th class="px-4 py-3">Nombre</th>
+          <th class="px-4 py-3 text-center">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of catalogoActual; let i = index"
+            class="border-b hover:bg-gray-50 transition-all duration-200">
+          <td class="px-4 py-2 text-center font-medium text-gray-700">{{ i + 1 }}</td>
+          <td class="px-4 py-2 text-gray-800">{{ item.nombre }}</td>
+          <td class="px-4 py-2 text-center">
+            <div class="flex justify-center gap-3">
+              <button title="Editar"
+                      (click)="abrirModalEditar(item)"
+                      class="p-2 rounded-full bg-yellow-50 hover:bg-yellow-100 transition">
+                <i data-lucide="edit-2" class="w-4 h-4 text-yellow-700"></i>
+              </button>
+              <button title="Eliminar"
+                      (click)="eliminar(item)"
+                      class="p-2 rounded-full bg-red-50 hover:bg-red-100 transition">
+                <i data-lucide="trash-2" class="w-4 h-4 text-red-700"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="catalogoActual.length === 0">
+          <td colspan="3" class="text-center text-gray-500 py-4">No hay registros.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODAL -->
+  <div *ngIf="mostrarModal" class="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+    <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md">
+      <h3 class="text-lg font-semibold text-blue-900 mb-4">
+        {{ modoEdicion ? 'Editar' : 'Agregar nuevo' }} {{ tipoSeleccionado | titlecase }}
+      </h3>
+
+      <input
+        type="text"
+        [(ngModel)]="nombreNuevo"
+        placeholder="Nombre"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:ring-2 focus:ring-blue-500 outline-none" />
+
+      <div class="flex justify-end gap-3">
+        <button
+          (click)="cerrarModal()"
+          class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg font-medium">
+          Cancelar
+        </button>
+        <button
+          (click)="guardar()"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

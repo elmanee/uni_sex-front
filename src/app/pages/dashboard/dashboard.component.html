@@ -1,0 +1,43 @@
+<div class="flex h-screen bg-gray-100 text-gray-800">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-[#0f172b] text-white flex flex-col">
+    <div class="px-6 py-4 border-b border-gray-700">
+      <h2 class="text-xl font-bold">🎓 UniSex</h2>
+      <p class="text-sm text-gray-300">Panel de Control</p>
+    </div>
+
+    <nav class="flex-1 px-4 py-4 space-y-2">
+      <a routerLink="/estudiantes" routerLinkActive="bg-blue-700"
+         class="block px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+        📚 Estudiantes
+      </a>
+      <a routerLink="/dashboard/catalogos" routerLinkActive="bg-blue-700"
+         class="block px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+        🗂️ Catálogos
+      </a>
+
+    </nav>
+
+    <button (click)="logout()" class="m-4 py-2 rounded-lg bg-red-600 hover:bg-red-700">
+      🚪 Cerrar sesión
+    </button>
+  </aside>
+
+  <!-- Main content -->
+  <div class="flex-1 flex flex-col">
+    <!-- Navbar -->
+    <header class="bg-white shadow-md p-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-blue-800">Dashboard</h1>
+      <div class="flex items-center gap-4">
+        <span class="font-medium text-gray-700">{{ user?.nombre }}</span>
+        <img src="https://api.dicebear.com/8.x/initials/svg?seed={{ user?.nombre }}"
+             class="w-10 h-10 rounded-full border border-gray-300" alt="avatar">
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="flex-1 p-6 overflow-y-auto">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
