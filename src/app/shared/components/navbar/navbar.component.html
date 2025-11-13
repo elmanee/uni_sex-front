@@ -1,1 +1,21 @@
-<p>navbar works!</p>
+<header class="bg-white shadow-sm h-20 flex items-center justify-between px-6">
+  <!-- Breadcrumbs o título de página -->
+  <div class="flex items-center space-x-2 text-sm text-slate-500">
+    <span class="text-slate-700 font-medium">{{ pageTitle }}</span>
+  </div>
+  
+  <!-- Perfil de Usuario -->
+  <div class="flex items-center space-x-4">
+    
+    <!-- Perfil -->
+    <div class="flex items-center space-x-2">
+      <div class="h-10 w-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-sm">
+        {{ userInitials }}
+      </div>
+      <div class="text-sm">
+        <div class="font-medium text-slate-800">{{ userName }}</div>
+        <div class="text-slate-500">Admin</div>
+      </div>
+    </div>
+  </div>
+</header>
