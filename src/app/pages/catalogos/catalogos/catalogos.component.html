@@ -1,93 +1,352 @@
-<div class="bg-white rounded-2xl shadow-xl p-6">
-  <!-- HEADER -->
-  <div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold text-blue-900 flex items-center gap-2">
-      <i data-lucide="book-open" class="w-6 h-6 text-blue-700"></i>
-      Administración de Catálogos
-    </h2>
+<!-- Cabecera de la Página -->
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h1 class="text-3xl font-bold text-slate-800">Gestión de Catálogos</h1>
+        <p class="text-sm text-slate-500 mt-1">Administra las carreras, bachilleratos y especialidades.</p>
+    </div>
+    <button (click)="abrirModalNuevo()" type="button" 
+            class="flex items-center justify-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-4 py-2.5 rounded-lg shadow-md transition-colors duration-200">
+      <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+      <span>Agregar Registro</span>
+    </button>
+</div>
 
-    <div class="flex items-center gap-3">
-      <select
-        [(ngModel)]="tipoSeleccionado"
-        (change)="cargarCatalogo()"
-        class="border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none">
-        <option value="carreras">Carreras</option>
-        <option value="especialidades">Especialidades</option>
-        <option value="bachilleratos">Bachilleratos</option>
-      </select>
+<!-- Contenedor ÚNICO con Pestañas -->
+<div class="bg-white rounded-lg shadow-lg">
 
-      <button
-        (click)="abrirModalNuevo()"
-        class="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium shadow transition-all">
-        <i data-lucide="plus" class="w-4 h-4"></i>
-        Nuevo
+  <!-- Barra de Navegación de Pestañas -->
+  <div class="border-b border-slate-200">
+    <nav class="flex -mb-px space-x-6 px-6" aria-label="Tabs">
+      <button 
+        (click)="selectTab('carreras')"
+        [class.border-emerald-500]="activeTab === 'carreras'"
+        [class.text-emerald-600]="activeTab === 'carreras'"
+        [class.border-transparent]="activeTab !== 'carreras'"
+        [class.text-slate-500]="activeTab !== 'carreras'"
+        class="py-4 px-1 border-b-2 font-medium text-sm hover:border-slate-300 hover:text-slate-700 transition-colors duration-150">
+        Carreras
       </button>
+
+      <button 
+        (click)="selectTab('bachilleratos')"
+        [class.border-emerald-500]="activeTab === 'bachilleratos'"
+        [class.text-emerald-600]="activeTab === 'bachilleratos'"
+        [class.border-transparent]="activeTab !== 'bachilleratos'"
+        [class.text-slate-500]="activeTab !== 'bachilleratos'"
+        class="py-4 px-1 border-b-2 font-medium text-sm hover:border-slate-300 hover:text-slate-700 transition-colors duration-150">
+        Bachilleratos
+      </button>
+
+      <button 
+        (click)="selectTab('especialidades')"
+        [class.border-emerald-500]="activeTab === 'especialidades'"
+        [class.text-emerald-600]="activeTab === 'especialidades'"
+        [class.border-transparent]="activeTab !== 'especialidades'"
+        [class.text-slate-500]="activeTab !== 'especialidades'"
+        class="py-4 px-1 border-b-2 font-medium text-sm hover:border-slate-300 hover:text-slate-700 transition-colors duration-150">
+        Especialidades
+      </button>
+    </nav>
+  </div>
+
+  <!-- Contenido de las Pestañas (con [ngSwitch]) -->
+  <div class="p-6">
+    <div [ngSwitch]="activeTab">
+
+      <!-- ======================= Caso: Carreras ======================= -->
+      <div *ngSwitchCase="'carreras'">
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-max">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase">ID</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase">Nombre</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase">Semestres</th>
+                        <th class="px-4 py-2 text-center text-xs font-semibold text-slate-600 uppercase">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                    <tr *ngFor="let item of carrerasPaginadas" class="hover:bg-slate-50">
+                        <td class="px-4 py-3 text-sm text-slate-900">{{ item.id }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-900">{{ item.nombre }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-900">{{ item.duracion_semestres }}</td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex items-center justify-center space-x-2">
+                                <button (click)="abrirModalEditar(item, 'carreras')" class="text-slate-500 hover:text-emerald-600" title="Editar"><svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg></button>
+                                <button (click)="eliminar(item, 'carreras')" class="text-slate-500 hover:text-red-600" title="Eliminar"><svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12.502 0v-.001c0-.001.001-.001.001-.001a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.001c0-.001.001-.001.001-.001m-7.5 0a48.065 48.065 0 0 0-3.478-.397M12 12.75h.008v.008H12v-.008Z" /></svg></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="carreras.length === 0">
+                       <td colspan="4" class="py-4 text-center text-slate-500">No hay carreras para mostrar.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- 🎨 Pie de Paginación para Carreras (Actualizado) -->
+        <div *ngIf="carreras.length > 0" class="px-1 py-4 border-t border-slate-200 mt-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                
+                <!-- Selector de Items por Página -->
+                <div class="flex items-center gap-2 text-sm text-slate-500">
+                    <span>Mostrar</span>
+                    <select [(ngModel)]="itemsPorPagina" (ngModelChange)="onItemsPorPaginaChange()"
+                            class="border border-slate-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-white">
+                        <option *ngFor="let option of opcionesItemsPorPagina" [ngValue]="option">{{ option }}</option>
+                    </select>
+                    <span>registros</span>
+                </div>
+
+                <!-- Info de Paginación -->
+                <span class="text-sm text-slate-500">
+                    Mostrando 
+                    <span class="font-medium">{{ (paginacionCarreras.paginaActual - 1) * itemsPorPagina + 1 }}</span>
+                    -
+                    <span class="font-medium">{{ (paginacionCarreras.paginaActual * itemsPorPagina) > paginacionCarreras.totalItems ? paginacionCarreras.totalItems : (paginacionCarreras.paginaActual * itemsPorPagina) }}</span>
+                    de
+                    <span class="font-medium">{{ paginacionCarreras.totalItems }}</span>
+                </span>
+
+                <!-- Botones de Paginación -->
+                <div class="flex space-x-1">
+                    <button (click)="cambiarPaginaCarreras(paginacionCarreras.paginaActual - 1)" 
+                            [disabled]="paginacionCarreras.paginaActual === 1"
+                            class="px-3 py-1 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed">
+                        Anterior
+                    </button>
+                    <button (click)="cambiarPaginaCarreras(paginacionCarreras.paginaActual + 1)"
+                            [disabled]="paginacionCarreras.paginaActual === getTotalPaginas('carreras')"
+                            class="px-3 py-1 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed">
+                        Siguiente
+                    </button>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- ======================= Caso: Bachilleratos ======================= -->
+      <div *ngSwitchCase="'bachilleratos'">
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-max">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase">ID</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase">Nombre</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase">Tipo</th>
+                        <th class="px-4 py-2 text-center text-xs font-semibold text-slate-600 uppercase">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                    <tr *ngFor="let item of bachiPaginados" class="hover:bg-slate-50">
+                        <td class="px-4 py-3 text-sm text-slate-900">{{ item.id }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-900">{{ item.nombre }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-900">{{ item.tipo }}</td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex items-center justify-center space-x-2">
+                                <button (click)="abrirModalEditar(item, 'bachilleratos')" class="text-slate-500 hover:text-emerald-600" title="Editar"><svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg></button>
+                                <button (click)="eliminar(item, 'bachilleratos')" class="text-slate-500 hover:text-red-600" title="Eliminar"><svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12.502 0v-.001c0-.001.001-.001.001-.001a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.001c0-.001.001-.001.001-.001m-7.5 0a48.065 48.065 0 0 0-3.478-.397M12 12.75h.008v.008H12v-.008Z" /></svg></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="bachilleratos.length === 0">
+                       <td colspan="4" class="py-4 text-center text-slate-500">No hay bachilleratos para mostrar.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- 🎨 Pie de Paginación para Bachilleratos (Actualizado) -->
+         <div *ngIf="bachilleratos.length > 0" class="px-1 py-4 border-t border-slate-200 mt-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                
+                <!-- Selector de Items por Página -->
+                <div class="flex items-center gap-2 text-sm text-slate-500">
+                    <span>Mostrar</span>
+                    <select [(ngModel)]="itemsPorPagina" (ngModelChange)="onItemsPorPaginaChange()"
+                            class="border border-slate-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-white">
+                        <option *ngFor="let option of opcionesItemsPorPagina" [ngValue]="option">{{ option }}</option>
+                    </select>
+                    <span>registros</span>
+                </div>
+
+                <!-- Info de Paginación -->
+                <span class="text-sm text-slate-500">
+                    Mostrando 
+                    <span class="font-medium">{{ (paginacionBachi.paginaActual - 1) * itemsPorPagina + 1 }}</span>
+                    -
+                    <span class="font-medium">{{ (paginacionBachi.paginaActual * itemsPorPagina) > paginacionBachi.totalItems ? paginacionBachi.totalItems : (paginacionBachi.paginaActual * itemsPorPagina) }}</span>
+                    de
+                    <span class="font-medium">{{ paginacionBachi.totalItems }}</span>
+                </span>
+
+                <!-- Botones de Paginación -->
+                <div class="flex space-x-1">
+                    <button (click)="cambiarPaginaBachi(paginacionBachi.paginaActual - 1)" 
+                            [disabled]="paginacionBachi.paginaActual === 1"
+                            class="px-3 py-1 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed">
+                        Anterior
+                    </button>
+                    <button (click)="cambiarPaginaBachi(paginacionBachi.paginaActual + 1)"
+                            [disabled]="paginacionBachi.paginaActual === getTotalPaginas('bachilleratos')"
+                            class="px-3 py-1 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed">
+                        Siguiente
+                    </button>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- ======================= Caso: Especialidades ======================= -->
+      <div *ngSwitchCase="'especialidades'">
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-max">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase">ID</th>
+                        <th class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase">Nombre</th>
+                        <th class="px-4 py-2 text-center text-xs font-semibold text-slate-600 uppercase">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                    <tr *ngFor="let item of especPaginadas" class="hover:bg-slate-50">
+                        <td class="px-4 py-3 text-sm text-slate-900">{{ item.id }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-900">{{ item.nombre }}</td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex items-center justify-center space-x-2">
+                                <button (click)="abrirModalEditar(item, 'especialidades')" class="text-slate-500 hover:text-emerald-600" title="Editar"><svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg></button>
+                                <button (click)="eliminar(item, 'especialidades')" class="text-slate-500 hover:text-red-600" title="Eliminar"><svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12.502 0v-.001c0-.001.001-.001.001-.001a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.001c0-.001.001-.001.001-.001m-7.5 0a48.065 48.065 0 0 0-3.478-.397M12 12.75h.008v.008H12v-.008Z" /></svg></button>
+                            </div>
+                        </td>
+                    </tr>
+                     <tr *ngIf="especialidades.length === 0">
+                       <td colspan="3" class="py-4 text-center text-slate-500">No hay especialidades para mostrar.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+         <!-- 🎨 Pie de Paginación para Especialidades (Actualizado) -->
+         <div *ngIf="especialidades.length > 0" class="px-1 py-4 border-t border-slate-200 mt-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                
+                <!-- Selector de Items por Página -->
+                <div class="flex items-center gap-2 text-sm text-slate-500">
+                    <span>Mostrar</span>
+                    <select [(ngModel)]="itemsPorPagina" (ngModelChange)="onItemsPorPaginaChange()"
+                            class="border border-slate-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-white">
+                        <option *ngFor="let option of opcionesItemsPorPagina" [ngValue]="option">{{ option }}</option>
+                    </select>
+                    <span>registros</span>
+                </div>
+
+                <!-- Info de Paginación -->
+                <span class="text-sm text-slate-500">
+                    Mostrando 
+                    <span class="font-medium">{{ (paginacionEspec.paginaActual - 1) * itemsPorPagina + 1 }}</span>
+                    -
+                    <span class="font-medium">{{ (paginacionEspec.paginaActual * itemsPorPagina) > paginacionEspec.totalItems ? paginacionEspec.totalItems : (paginacionEspec.paginaActual * itemsPorPagina) }}</span>
+                    de
+                    <span class="font-medium">{{ paginacionEspec.totalItems }}</span>
+                </span>
+
+                <!-- Botones de Paginación -->
+                <div class="flex space-x-1">
+                    <button (click)="cambiarPaginaEspec(paginacionEspec.paginaActual - 1)" 
+                            [disabled]="paginacionEspec.paginaActual === 1"
+                            class="px-3 py-1 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed">
+                        Anterior
+                    </button>
+                    <button (click)="cambiarPaginaEspec(paginacionEspec.paginaActual + 1)"
+                            [disabled]="paginacionEspec.paginaActual === getTotalPaginas('especialidades')"
+                            class="px-3 py-1 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed">
+                        Siguiente
+                    </button>
+                </div>
+            </div>
+        </div>
+      </div>
+
     </div>
   </div>
+</div>
 
-  <!-- TABLA -->
-  <div class="overflow-x-auto">
-    <table class="min-w-full border border-gray-300 rounded-xl text-sm text-left">
-      <thead class="bg-blue-900 text-white">
-        <tr>
-          <th class="px-4 py-3 w-16 text-center">#</th>
-          <th class="px-4 py-3">Nombre</th>
-          <th class="px-4 py-3 text-center">Acciones</th>
-        </tr>
-      </thead>
 
-      <tbody>
-        <tr *ngFor="let item of catalogoActual; let i = index"
-            class="border-b hover:bg-gray-50 transition-all duration-200">
-          <td class="px-4 py-2 text-center font-medium text-gray-700">{{ i + 1 }}</td>
-          <td class="px-4 py-2 text-gray-800">{{ item.nombre }}</td>
-          <td class="px-4 py-2 text-center">
-            <div class="flex justify-center gap-3">
-              <button title="Editar"
-                      (click)="abrirModalEditar(item)"
-                      class="p-2 rounded-full bg-yellow-50 hover:bg-yellow-100 transition">
-                <i data-lucide="edit-2" class="w-4 h-4 text-yellow-700"></i>
-              </button>
-              <button title="Eliminar"
-                      (click)="eliminar(item)"
-                      class="p-2 rounded-full bg-red-50 hover:bg-red-100 transition">
-                <i data-lucide="trash-2" class="w-4 h-4 text-red-700"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr *ngIf="catalogoActual.length === 0">
-          <td colspan="3" class="text-center text-gray-500 py-4">No hay registros.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODAL -->
-  <div *ngIf="mostrarModal" class="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-    <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md">
-      <h3 class="text-lg font-semibold text-blue-900 mb-4">
-        {{ modoEdicion ? 'Editar' : 'Agregar nuevo' }} {{ tipoSeleccionado | titlecase }}
-      </h3>
-
-      <input
-        type="text"
-        [(ngModel)]="nombreNuevo"
-        placeholder="Nombre"
-        class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:ring-2 focus:ring-blue-500 outline-none" />
-
-      <div class="flex justify-end gap-3">
-        <button
-          (click)="cerrarModal()"
-          class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg font-medium">
-          Cancelar
+<!-- ======================= MODAL (Sin cambios) ======================= -->
+<div *ngIf="mostrarModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+  
+  <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+    <!-- Header del Modal -->
+    <div class="flex justify-between items-center pb-3 mb-4 border-b border-slate-200">
+        <h3 class="text-xl font-semibold text-slate-800">
+          {{ modalTitle }}
+        </h3>
+        <button (click)="cerrarModal()" class="text-slate-400 hover:text-slate-600">
+          <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
         </button>
-        <button
-          (click)="guardar()"
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
-          Guardar
+    </div>
+    
+    <!-- PASO 1: Selección de tipo (SOLO para 'NUEVO') -->
+    <div *ngIf="!modoEdicion && !tipoCatalogo" class="space-y-3">
+        <p class="text-sm font-medium text-slate-700 mb-2">¿Qué tipo de registro deseas agregar?</p>
+        <button (click)="seleccionarTipoParaCrear('carreras')"
+                class="w-full text-left p-3 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-800 border border-slate-200 hover:border-emerald-300 transition-all">
+            <span class="font-semibold">Carrera</span>
         </button>
+        <button (click)="seleccionarTipoParaCrear('bachilleratos')"
+                class="w-full text-left p-3 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-800 border border-slate-200 hover:border-emerald-300 transition-all">
+            <span class="font-semibold">Bachillerato</span>
+        </button>
+        <button (click)="seleccionarTipoParaCrear('especialidades')"
+                class="w-full text-left p-3 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-800 border border-slate-200 hover:border-emerald-300 transition-all">
+            <span class="font-semibold">Especialidad</span>
+        </button>
+    </div>
+
+    <!-- PASO 2: Formulario (Se muestra si ya se eligió un tipo o si es modo Edición) -->
+    <div *ngIf="tipoCatalogo" class="space-y-4">
+      <!-- Campo nombre (Común a todos) -->
+      <div>
+        <label for="modal_nombre" class="block text-sm font-medium text-slate-700 mb-1">Nombre</label>
+        <input
+          id="modal_nombre" type="text"
+          [(ngModel)]="itemActual.nombre"
+          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+      </div>
+
+      <!-- Campo duración (solo carreras) -->
+      <div *ngIf="tipoCatalogo === 'carreras'">
+        <label for="modal_duracion" class="block text-sm font-medium text-slate-700 mb-1">Duración (Semestres)</label>
+        <input
+          id="modal_duracion" type="number"
+          [(ngModel)]="itemActual.duracion_semestres"
+          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+      </div>
+
+      <!-- Campo tipo (solo bachilleratos) -->
+      <div *ngIf="tipoCatalogo === 'bachilleratos'">
+         <label for="modal_tipo" class="block text-sm font-medium text-slate-700 mb-1">Tipo</label>
+        <select
+          id="modal_tipo"
+          [(ngModel)]="itemActual.tipo"
+          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+          <option value="" disabled selected>Selecciona tipo</option>
+          <option value="Técnico">Técnico</option>
+          <option value="General">General</option>
+        </select>
       </div>
     </div>
+
+    <!-- Botones del Modal (Se muestran solo si hay un formulario visible) -->
+    <div *ngIf="tipoCatalogo" class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
+      <button (click)="cerrarModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-5 py-2 rounded-lg transition-colors duration-200">
+        Cancelar
+      </button>
+      <button (click)="guardar()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-5 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
+        {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+      </button>
+    </div>
+
   </div>
 </div>
